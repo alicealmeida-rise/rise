@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guia">
+<title>Guia — Alice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080810;--bg2:#0e0e18;--bg3:#14141e;--card:#111118;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.18);
+  --text:#e8e8ed;--muted:#4a4a5a;--muted2:#2a2a38;
+  --acc:#a78bfa;--acc-dim:rgba(167,139,250,0.09);--acc-glow:rgba(167,139,250,0.18);
+  --green:#4dcf8a;--green-dim:rgba(77,207,138,0.08);
+  --orange:#f4a34d;--orange-dim:rgba(244,163,77,0.08);
+  --red:#f06868;--red-dim:rgba(240,104,104,0.08);
+  --blue:#5b9cf6;--blue-dim:rgba(91,156,246,0.08);
+  --cyan:#3dd6c8;--cyan-dim:rgba(61,214,200,0.08);
+  --pink:#f472b6;--pink-dim:rgba(244,114,182,0.08);
+  --yellow:#f4e04d;--yellow-dim:rgba(244,224,77,0.08);
+  --r:16px;--rs:10px;--rx:100px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto}
+.topbar{padding:52px 20px 14px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.app-name{font-size:18px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,#a78bfa,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.app-sub{font-size:9px;color:var(--muted);font-family:"DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.today-pill{font-size:10px;font-family:"DM Mono",monospace;color:var(--acc);border:1px solid rgba(167,139,250,.22);padding:5px 12px;border-radius:var(--rx)}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:18px 16px 110px}
+.scroll::-webkit-scrollbar{display:none}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg);border-top:1px solid var(--border);display:flex;padding:8px 0 26px;z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;cursor:pointer;opacity:.25;transition:opacity .2s}
+.nb.on{opacity:1}
+.nb svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nb span{font-size:9px;font-family:"DM Mono",monospace;letter-spacing:.05em}
+.page{display:none}.page.on{display:block}
+.sl{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:"DM Mono",monospace;margin-bottom:10px}
+.pill{display:inline-block;font-size:10px;font-family:"DM Mono",monospace;padding:3px 9px;border-radius:var(--rx);font-weight:500;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+
+/* ALERT STRIP */
+.alert-strip{border-radius:var(--r);padding:13px 15px;margin-bottom:8px;border-left:3px solid}
+.al-urgent{background:var(--red-dim);border-color:var(--red)}
+.al-warn{background:var(--orange-dim);border-color:var(--orange)}
+.al-ok{background:var(--green-dim);border-color:var(--green)}
+.al-info{background:var(--acc-dim);border-color:var(--acc)}
+.al-title{font-size:12px;font-weight:600;margin-bottom:4px;line-height:1.3}
+.al-text{font-size:11px;color:var(--muted);line-height:1.65}
+.al-text b{color:var(--text);font-weight:500}
+
+/* FOCUS CARD */
+.focus-card{background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.22);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.focus-eyebrow{font-size:9px;font-family:"DM Mono",monospace;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.focus-title{font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-.01em}
+.focus-sub{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.focus-btn{background:var(--acc);color:#080810;font-size:12px;font-weight:700;padding:10px 18px;border-radius:var(--rx);border:none;cursor:pointer;font-family:"DM Sans",sans-serif;display:inline-block}
+
+/* PILARES */
+.pilar-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.pilar-row:last-child{border-bottom:none}
+.pilar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pilar-name{font-size:12px;color:var(--text);flex:1;font-weight:500}
+.pilar-metric{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);flex-shrink:0;width:90px;text-align:right}
+.pilar-bar{width:50px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;flex-shrink:0}
+.pilar-fill{height:100%;border-radius:2px}
+
+/* REGISTRO */
+.reg-pilar{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:8px}
+.reg-pilar-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.reg-pilar-name{font-size:13px;font-weight:600;flex:1}
+.reg-pilar-arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+.reg-pilar-arrow.open{transform:rotate(90deg)}
+.reg-pilar-body{display:none;padding:0 14px 12px}
+.reg-pilar-body.open{display:block}
+.reg-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.reg-item:last-child{border-bottom:none}
+.reg-check{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.reg-check.done{background:var(--acc);border-color:var(--acc)}
+.reg-item-text{font-size:11px;color:var(--muted);flex:1;line-height:1.4}
+.reg-item-text.done{color:var(--muted2);text-decoration:line-through}
+.reg-save-btn{width:100%;padding:14px;background:var(--acc);color:#080810;font-size:14px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;font-family:"DM Sans",sans-serif;margin-top:12px}
+
+/* PILAR DETAIL */
+.pd-level{background:var(--acc-dim);border:1px solid rgba(167,139,250,.2);border-radius:var(--rs);padding:9px 12px;margin-bottom:8px;font-size:11px;color:var(--acc);font-family:"DM Mono",monospace}
+.pd-know{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.pd-know-box{border-radius:var(--rs);padding:9px 11px}
+.pd-know-label{font-size:9px;font-family:"DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.pd-know-items{font-size:10px;line-height:1.7}
+.pd-study-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:13px 14px;margin-bottom:8px}
+.pd-study-eyebrow{font-size:9px;font-family:"DM Mono",monospace;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.pd-study-title{font-size:13px;font-weight:600;margin-bottom:5px;line-height:1.3}
+.pd-study-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.pd-science{background:var(--bg3);border-radius:var(--rs);padding:9px 11px;font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:10px;border-left:2px solid var(--acc)}
+.pd-science b{color:var(--text);font-weight:500}
+.pd-btn-row{display:flex;gap:6px}
+.pd-btn{flex:1;padding:9px;border-radius:var(--rs);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;text-align:center}
+.pd-btn-primary{background:var(--acc);color:#080810}
+.pd-btn-sec{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+
+/* FINANCEIRO */
+.fin-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:8px}
+.fin-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.fin-row:last-child{border-bottom:none}
+.fin-label{color:var(--muted)}
+.fin-val{font-family:"DM Mono",monospace;font-weight:500}
+.fin-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:6px 10px;font-size:12px;font-family:"DM Mono",monospace;color:var(--text);width:100px;outline:none;-webkit-appearance:none;text-align:right}
+.fin-input:focus{border-color:var(--acc)}
+
+/* POMODORO */
+.pomo-ring{width:130px;height:130px;position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.pomo-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+.pomo-num{font-size:36px;font-weight:700;font-family:"DM Mono",monospace;color:var(--acc);position:relative;z-index:1;line-height:1}
+.pomo-sub{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace;position:relative;z-index:1;margin-top:3px}
+
+/* CONQUISTAS */
+.conquista-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.conquista-emoji{font-size:22px;flex-shrink:0}
+.conquista-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.conquista-date{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace}
+
+/* ENERGY */
+.energy-btns{display:flex;gap:5px;margin-top:9px}
+.eb{flex:1;padding:10px 3px;border-radius:var(--rs);border:1px solid var(--border);background:transparent;cursor:pointer;font-family:"DM Mono",monospace;font-size:14px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text);transition:all .15s}
+.eb span{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:400}
+.e1.esel{border-color:#f06868;background:rgba(240,104,104,.10);color:#f06868}
+.e2.esel{border-color:#f4a34d;background:rgba(244,163,77,.10);color:#f4a34d}
+.e3.esel{border-color:#f4e04d;background:rgba(244,224,77,.10);color:#f4e04d}
+.e4.esel{border-color:#a8d93a;background:rgba(168,217,58,.10);color:#a8d93a}
+.e5.esel{border-color:#4dcf8a;background:rgba(77,207,138,.10);color:#4dcf8a}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.sheet{background:var(--bg2);border-radius:24px 24px 0 0;padding:10px 20px 36px;width:100%;max-width:430px;max-height:92vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.sheet h2{font-size:18px;font-weight:700;margin-bottom:5px}
+.sheet p{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.55}
+.sbtns{display:flex;flex-direction:column;gap:8px}
+.sb{padding:14px;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;text-align:center}
+.sb-a{background:var(--acc);color:#080810}
+.sb-c{background:transparent;color:var(--muted);border:1px solid var(--border)}
+
+/* GRATIDAO */
+.grat-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:12px 14px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;resize:none;line-height:1.6;min-height:80px;color-scheme:dark}
+.grat-input:focus{border-color:var(--acc)}
+
+/* PROCRASTINAÇÃO */
+.proc-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px}
+.proc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.proc-title{font-size:13px;font-weight:600;flex:1}
+.proc-tag{font-size:9px;font-family:"DM Mono",monospace;padding:3px 8px;border-radius:var(--rx)}
+.proc-why{font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.55}
+.proc-action{background:var(--acc-dim);border:1px solid rgba(167,139,250,.2);border-radius:var(--rs);padding:8px 10px;font-size:11px;color:var(--acc);line-height:1.5}
+.proc-action b{font-weight:600}
+
+/* REVISAO */
+.rev-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:8px}
+.rev-stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rev-pilar-name{font-size:13px;font-weight:600}
+.rev-trend{font-size:11px;font-family:"DM Mono",monospace}
+.rev-items{font-size:11px;color:var(--muted);line-height:1.8}
+
+/* INPUTS */
+input[type=text],input[type=number],textarea,select{font-family:"DM Sans",sans-serif;color-scheme:dark}
+textarea{color-scheme:dark}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><div class="app-name">Guia</div><div class="app-sub">Alice de 3 anos</div></div>
+  <span class="today-pill" id="todayPill"></span>
+</div>
+<div class="scroll" id="mainScroll">
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div style="margin-bottom:14px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:2px" id="homeSub"></div>
+  </div>
+  <div id="alertasFeed" style="margin-bottom:14px"></div>
+  <div class="sl">Foco de hoje</div>
+  <div class="focus-card" id="focusCard">
+    <div class="focus-eyebrow" id="focusEyebrow">Carregando...</div>
+    <div class="focus-title" id="focusTitle"></div>
+    <div class="focus-sub" id="focusSub"></div>
+    <button class="focus-btn" onclick="goFocusPilar()">Ver o que fazer agora →</button>
+  </div>
+  <div class="sl">Seus pilares</div>
+  <div class="card" style="padding:8px 14px" id="pilaresHome"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;margin-top:10px">
+    <button onclick="showPage('registro')" style="padding:12px;border-radius:var(--r);border:1px solid rgba(167,139,250,.25);background:var(--acc-dim);color:var(--acc);font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">📝 Registrar dia</button>
+    <button onclick="showPage('ferramentas')" style="padding:12px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">⚡ Ferramentas</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px">
+    <button onclick="openGratidao()" style="padding:10px 4px;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">🙏<br>Gratidão</button>
+    <button onclick="showPage('conquistas')" style="padding:10px 4px;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">🏆<br>Vitórias</button>
+    <button onclick="exportGuia()" style="padding:10px 4px;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;font-family:DM Sans,sans-serif;text-align:center">📤<br>Exportar</button>
+  </div>
+</div>
+
+<!-- REGISTRO -->
+<div class="page" id="page-registro">
+  <div style="margin-bottom:14px">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Como foi hoje?</div>
+    <div style="font-size:11px;color:var(--muted)">Marca o que você fez dentro do que foi sugerido.</div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:9px;letter-spacing:.05em;text-transform:uppercase">Energia hoje</div>
+    <div class="energy-btns">
+      <button class="eb e1" onclick="setEnergy(1)">1<span>no chão</span></button>
+      <button class="eb e2" onclick="setEnergy(2)">2<span>baixa</span></button>
+      <button class="eb e3" onclick="setEnergy(3)">3<span>ok</span></button>
+      <button class="eb e4" onclick="setEnergy(4)">4<span>boa</span></button>
+      <button class="eb e5" onclick="setEnergy(5)">5<span>🔥</span></button>
+    </div>
+  </div>
+  <div id="regPilares"></div>
+  <button class="reg-save-btn" onclick="saveRegistro()">Salvar registro do dia ✓</button>
+</div>
+
+<!-- PILARES (detail view) -->
+<div class="page" id="page-pilar">
+  <div id="pilarDetail"></div>
+</div>
+
+<!-- EVOLUÇÃO -->
+<div class="page" id="page-evol">
+  <div style="font-size:16px;font-weight:700;margin-bottom:4px">Evolução</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Seu progresso real em cada pilar.</div>
+  <div class="sl">Pilares</div>
+  <div id="evolPilares"></div>
+  <div class="sl" style="margin-top:4px">Revisão quinzenal</div>
+  <div id="revisaoWrap"></div>
+</div>
+
+<!-- FERRAMENTAS -->
+<div class="page" id="page-ferramentas">
+  <div style="font-size:16px;font-weight:700;margin-bottom:4px">Ferramentas</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Para quando você precisa de foco ou está travada.</div>
+
+  <!-- ANTIPROCRASTINAÇÃO -->
+  <div class="sl">Antiprocrastinação</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.55">O que está travado? O Guia analisa o porquê e te dá a menor ação possível pra começar agora.</div>
+    <input type="text" id="procInput" placeholder="Ex: não consigo começar o relatório do trabalho..." style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px">
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <select id="procCateg" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 10px;font-size:12px;color:var(--text);outline:none">
+        <option value="">Categoria...</option>
+        <option value="trabalho">Trabalho</option>
+        <option value="estudo">Estudo</option>
+        <option value="casa">Casa</option>
+        <option value="financeiro">Financeiro</option>
+        <option value="saude">Saúde</option>
+        <option value="familia">Família</option>
+        <option value="outro">Outro</option>
+      </select>
+      <select id="procMotivo" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 10px;font-size:12px;color:var(--text);outline:none">
+        <option value="">Por que trava?</option>
+        <option value="medo">Medo de errar</option>
+        <option value="grande">Parece grande demais</option>
+        <option value="cansaco">Cansaço</option>
+        <option value="clareza">Falta de clareza</option>
+        <option value="perfec">Perfeccionismo</option>
+        <option value="inicio">Não sei por onde começar</option>
+      </select>
+    </div>
+    <button onclick="analisarProc()" style="width:100%;padding:11px;border-radius:var(--rs);border:none;background:var(--acc);color:#080810;font-size:13px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">Destrava agora →</button>
+  </div>
+  <div id="procResult"></div>
+  <div id="procList" style="margin-top:4px"></div>
+
+  <!-- POMODORO -->
+  <div class="sl" style="margin-top:8px">Modo foco — Pomodoro</div>
+  <div class="card" style="text-align:center;margin-bottom:12px">
+    <div class="pomo-ring">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="56" stroke="rgba(255,255,255,0.05)" stroke-width="7" fill="none"/>
+        <circle id="pomoArc" cx="65" cy="65" r="56" stroke="#a78bfa" stroke-width="7" fill="none" stroke-dasharray="352" stroke-dashoffset="0" stroke-linecap="round" style="transition:stroke-dashoffset 1s linear,stroke .3s"/>
+      </svg>
+      <div>
+        <div class="pomo-num" id="pomoNum">25:00</div>
+        <div class="pomo-sub" id="pomoSub">foco</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px" id="pomoContext">25 min foco · 5 min pausa</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
+      <button onclick="setPomoDur(25)" id="pd25" style="padding:7px 14px;border-radius:var(--rx);border:1px solid rgba(167,139,250,.3);background:var(--acc-dim);color:var(--acc);font-size:11px;font-family:DM Mono,monospace;cursor:pointer">25min</button>
+      <button onclick="setPomoDur(45)" id="pd45" style="padding:7px 14px;border-radius:var(--rx);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:DM Mono,monospace;cursor:pointer">45min</button>
+      <button onclick="setPomoDur(60)" id="pd60" style="padding:7px 14px;border-radius:var(--rx);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:DM Mono,monospace;cursor:pointer">60min</button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button onclick="pomodoroStart()" id="pomoStartBtn" style="padding:11px 24px;border-radius:var(--rx);border:none;background:var(--acc);color:#080810;font-size:13px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">Iniciar foco</button>
+      <button onclick="pomodoroStop()" style="padding:11px 18px;border-radius:var(--rx);border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif">Parar</button>
+    </div>
+  </div>
+
+  <!-- FINANCEIRO -->
+  <div class="sl">Controle financeiro</div>
+  <div class="card" style="margin-bottom:8px">
+    <div style="font-size:12px;font-weight:600;margin-bottom:10px">Lançar gasto</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+      <div>
+        <div style="font-size:9px;color:var(--muted);font-family:DM Mono,monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Descrição</div>
+        <input type="text" id="finDesc" placeholder="Ex: mercado" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);outline:none">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--muted);font-family:DM Mono,monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Valor (R$)</div>
+        <input type="number" id="finVal" inputmode="decimal" placeholder="0,00" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);outline:none;-webkit-appearance:none">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--muted);font-family:DM Mono,monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Categoria</div>
+        <select id="finCateg" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);outline:none">
+          <option value="alimentacao">Alimentação</option>
+          <option value="transporte">Transporte</option>
+          <option value="saude">Saúde</option>
+          <option value="educacao">Educação</option>
+          <option value="lazer">Lazer</option>
+          <option value="divida">Dívida</option>
+          <option value="casa">Casa</option>
+          <option value="filhas">Filhas</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--muted);font-family:DM Mono,monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Tipo</div>
+        <select id="finTipo" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 10px;font-size:12px;color:var(--text);outline:none">
+          <option value="gasto">Gasto</option>
+          <option value="receita">Receita</option>
+          <option value="divida">Pagamento dívida</option>
+        </select>
+      </div>
+    </div>
+    <button onclick="lancarGasto()" style="width:100%;padding:10px;border-radius:var(--rs);border:none;background:var(--acc);color:#080810;font-size:13px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">Lançar</button>
+  </div>
+  <div id="finResumo"></div>
+  <div id="finList"></div>
+</div>
+
+<!-- CONQUISTAS -->
+<div class="page" id="page-conquistas">
+  <div style="font-size:16px;font-weight:700;margin-bottom:4px">Minhas vitórias 🏆</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Pequenas e grandes — todas contam.</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Registre uma vitória de hoje</div>
+    <input type="text" id="conquInput" placeholder="Ex: fui treinar mesmo cansada..." style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px">
+    <select id="conquPilar" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 10px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px">
+      <option value="geral">Geral</option>
+      <option value="psico">Psico do Esporte</option>
+      <option value="atleta">Atleta</option>
+      <option value="quemSou">Quem eu sou</option>
+      <option value="familia">Família</option>
+      <option value="independencia">Independência</option>
+      <option value="vinculos">Vínculos</option>
+      <option value="presenca">Presença</option>
+      <option value="acao">Ação</option>
+    </select>
+    <button onclick="addConquista()" style="width:100%;padding:10px;border-radius:var(--rs);border:none;background:var(--acc);color:#080810;font-size:13px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">Registrar vitória ✓</button>
+  </div>
+  <div id="conquistasList"></div>
+</div>
+
+</div><!-- end scroll -->
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nb on" id="nb-home" onclick="showPage('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    <span>Início</span>
+  </div>
+  <div class="nb" id="nb-registro" onclick="showPage('registro')">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <span>Registro</span>
+  </div>
+  <div class="nb" id="nb-pilar" onclick="showPage('evol')" style="display:none"></div>
+  <div class="nb" id="nb-evol" onclick="showPage('evol')">
+    <svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+    <span>Evolução</span>
+  </div>
+  <div class="nb" id="nb-ferramentas" onclick="showPage('ferramentas')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+    <span>Ferramentas</span>
+  </div>
+  <div class="nb" id="nb-conquistas" onclick="showPage('conquistas')">
+    <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg>
+    <span>Vitórias</span>
+  </div>
+</div>
+
+<!-- MODAL GRATIDAO -->
+<div class="overlay" id="modalGratidao">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Gratidão 🙏</h2>
+    <p>Uma coisa concreta e boa que aconteceu hoje. Não precisa ser grande.</p>
+    <textarea class="grat-input" id="gratText" placeholder="Hoje eu sou grata por..."></textarea>
+    <div style="font-size:10px;color:var(--muted);margin:8px 0 14px;line-height:1.55;font-style:italic">A pesquisa de Lyubomirsky mostra que registrar gratidão específica diariamente muda a química cerebral em 3 semanas — reduz cortisol, aumenta dopamina e melhora a qualidade do sono.</div>
+    <div class="sbtns">
+      <button class="sb sb-a" onclick="saveGratidao()">Registrar gratidão ✓</button>
+      <button class="sb sb-c" onclick="closeAll()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXPORT -->
+<div class="overlay" id="modalExport">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Relatório quinzenal 📊</h2>
+    <p>Copia e cola na conversa com a Rise no Claude para análise profunda.</p>
+    <textarea id="exportText" readonly style="width:100%;height:220px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:12px;font-size:11px;font-family:DM Mono,monospace;color:var(--text);resize:none;outline:none;line-height:1.6;margin-bottom:11px;color-scheme:dark"></textarea>
+    <div class="sbtns">
+      <button class="sb sb-a" onclick="copyExport()">Copiar texto</button>
+      <button class="sb sb-c" onclick="closeAll()">Fechar</button>
+    </div>
+    <div id="copyConfirm" style="text-align:center;font-size:12px;color:var(--acc);font-family:DM Mono,monospace;margin-top:8px;display:none">✓ Copiado! Cola na conversa com a Rise.</div>
+  </div>
+</div>
+
+<!-- MODAL REVISAO -->
+<div class="overlay" id="modalRevisao">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Revisão quinzenal 📈</h2>
+    <p>Como foram esses 15 dias em cada pilar?</p>
+    <div id="revisaoForm"></div>
+    <div class="sbtns" style="margin-top:12px">
+      <button class="sb sb-a" onclick="saveRevisao()">Salvar revisão ✓</button>
+      <button class="sb sb-c" onclick="closeAll()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var MN=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+var DN=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+
+// PILARES DATA
+var PILARES=[
+{id:'psico',nome:'Psico do Esporte',cor:'#a78bfa',meta:'Atender atletas, R$15k/mês, referência',
+ estudos:[
+  {titulo:'O que é psicologia do esporte',desc:'Área, campo de atuação, diferença de psicologia clínica. Você já tem o CRP — esse é seu ponto de entrada.',link:'https://youtube.com/results?search_query=psicologia+do+esporte+o+que+e',tempo:'20min',ciencia:'A psicologia do esporte usa princípios da psicologia e neurociência comportamental para otimizar performance, motivação e bem-estar de atletas. É uma das áreas de maior crescimento no Brasil.'},
+  {titulo:'Motivação intrínseca vs extrínseca no esporte',desc:'Por que atletas desistem — e como reverter. Base de toda atuação. Teoria da Autodeterminação de Deci & Ryan.',link:'https://youtube.com/results?search_query=motivacao+intrínseca+esporte+teoria+autodeterminacao',tempo:'25min',ciencia:'A Teoria da Autodeterminação (Deci & Ryan, 1985) mostra que motivação intrínseca gera mais persistência, performance e bem-estar do que recompensas externas. Atletas com motivação intrínseca se recuperam melhor de lesões e treinam com mais qualidade.'},
+  {titulo:'Flow — estado de máxima performance',desc:'O conceito de Csikszentmihalyi aplicado ao esporte. Como criar as condições para o atleta entrar em flow.',link:'https://youtube.com/results?search_query=flow+csikszentmihalyi+esporte+performance',tempo:'30min',ciencia:'O estado de flow (Csikszentmihalyi, 1990) é caracterizado por concentração total, perda de noção do tempo e sensação de controle. Atletas em flow performam até 5x melhor. O psicólogo do esporte cria as condições para esse estado.'},
+  {titulo:'Ansiedade pré-competição — como trabalhar',desc:'Técnicas baseadas em evidência: respiração diafragmática, visualização, rotinas pré-competição.',link:'https://youtube.com/results?search_query=ansiedade+pre+competicao+psicologia+esporte+tecnicas',tempo:'25min',ciencia:'A ativação fisiológica pré-competição pode ser interpretada como ansiedade ou excitação — a diferença está na cognição (Reappraisal, Jamieson 2012). Psicólogos do esporte ensinam atletas a re-interpretar essa ativação como energia positiva.'},
+  {titulo:'Visualização mental — protocolo científico',desc:'Como usar visualização para melhorar performance. Diferente de "pensar positivo" — é treino mental real.',link:'https://youtube.com/results?search_query=visualizacao+mental+esporte+protocolo+cientifico',tempo:'20min',ciencia:'A visualização ativa os mesmos circuitos neurais do movimento real (Jeannerod, 1994). Estudos com basquetebol mostram que atletas que praticam visualização melhoram 23% sem treino físico adicional.'},
+  {titulo:'Como conseguir seus primeiros atendimentos',desc:'Com CRP ativo — estratégias concretas: times amadores, academias, grupos de corrida, vôlei.',link:'https://youtube.com/results?search_query=como+comecar+psicologia+do+esporte+primeiros+clientes',tempo:'20min',ciencia:'A melhor estratégia inicial é atender gratuitamente ou a valor simbólico em contextos que você já frequenta. Você joga vôlei — esse é seu mercado natural. Credibilidade se constrói com resultado, não com certificado.'},
+  {titulo:'Identidade atlética e transições de carreira',desc:'Como atletas constroem identidade e como trabalhar crises de transição — lesão, aposentadoria, mudança.',link:'https://youtube.com/results?search_query=identidade+atletica+transicao+carreira+psicologia',tempo:'25min',ciencia:'A identidade atlética (Brewer, 1993) é o grau em que o atleta se define pelo papel esportivo. Alta identidade atlética sem outras áreas de vida desenvolvidas aumenta vulnerabilidade a crises. Psicólogos do esporte trabalham equilíbrio de identidade.'},
+  {titulo:'Construir presença online como psico do esporte',desc:'Instagram, LinkedIn, conteúdo que atrai atletas. Como você, Alice, pode posicionar sua experiência no vôlei.',link:'https://youtube.com/results?search_query=como+construir+autoridade+online+psicologia',tempo:'20min',ciencia:'A presença digital é o principal canal de captação para psicólogos independentes. Conteúdo que demonstra conhecimento aplicado gera 3x mais conversões do que conteúdo genérico (dados HubSpot 2023).'},
+  {titulo:'CFP e regulamentação — o que você precisa saber',desc:'Como registrar sua atuação, especialização reconhecida, ética profissional no esporte.',link:'https://cfp.org.br',tempo:'30min',ciencia:'O CFP reconhece psicologia do esporte como área de atuação. A SBPE (Sociedade Brasileira de Psicologia do Esporte) oferece formação especializada. Com CRP ativo você pode atender imediatamente — a especialização vem em paralelo.'},
+  {titulo:'Criar sua consultoria — psico, preparador e nutri',desc:'Como estruturar um serviço integrado de alta performance. Modelo de negócio, precificação, captação.',link:'https://youtube.com/results?search_query=consultoria+esportiva+multidisciplinar+como+montar',tempo:'35min',ciencia:'Serviços integrados (psicologia + preparação física + nutrição) cobram em média 3x mais que serviços individuais e têm taxa de retenção 60% maior. É o modelo de maior crescimento no mercado fitness premium.'}
+ ],
+ acoes:['Pesquisar pós em psico do esporte online (hoje, 10 min)','Criar perfil no Instagram focado em esporte e performance','Entrar em contato com 1 time de vôlei amador da sua cidade','Estudar 20 min por dia — consistência > intensidade','Registrar seu primeiro atendimento gratuito esta semana'],
+ sei:['Seu CRP está ativo','Formação em psicologia completa','Vivência real no esporte e vôlei'],
+ naoSei:['Técnicas específicas de psico do esporte','Como captar atletas','Como precificar seus serviços','Visualização e protocolos mentais']},
+
+{id:'atleta',nome:'Atleta + Saúde',cor:'#4dcf8a',meta:'Vôlei intermediário/avançado, corpo preparado, rotina sólida',
+ estudos:[
+  {titulo:'Periodização do treinamento para atletas amadores',desc:'Como estruturar treinos de musculação e vôlei para máxima performance sem overtraining.',link:'https://youtube.com/results?search_query=periodizacao+treinamento+volei+musculacao+amador',tempo:'25min',ciencia:'A periodização (Matveyev, 1960s, revisada por Bompa) organiza o treino em ciclos para maximizar adaptação e minimizar overtraining. Para atletas amadores, periodização simples com deload a cada 4 semanas aumenta performance em 20-30%.'},
+  {titulo:'Nutrição para performance no vôlei',desc:'O que comer antes, durante e após o treino. Proteína, carboidrato e hidratação para atletas.',link:'https://youtube.com/results?search_query=nutricao+para+volei+performance+atletica',tempo:'30min',ciencia:'Atletas precisam de 1.6-2.2g de proteína por kg de peso (Burke et al., 2019). Carboidratos pré-treino melhoram performance em 15-20%. Desidratação de apenas 2% compromete força e velocidade de reação.'},
+  {titulo:'Sono e recuperação — o treino invisível',desc:'Por que 7-9h de sono é tão importante quanto o treino. Como melhorar a qualidade do sono.',link:'https://youtube.com/results?search_query=sono+recuperacao+atletica+como+melhorar',tempo:'25min',ciencia:'Durante o sono profundo (fases 3-4), o hormônio do crescimento é liberado em pico — é quando o músculo se repara e cresce. Matthew Walker (Why We Sleep, 2017): atletas que dormem menos de 6h têm performance 30% inferior e risco de lesão 60% maior.'},
+  {titulo:'Salto vertical — como aumentar para o vôlei',desc:'Treino de potência, plyometria, exercícios específicos para ganhar altura no salto de ataque.',link:'https://youtube.com/results?search_query=como+aumentar+salto+vertical+volei+treino+potencia',tempo:'30min',ciencia:'O salto vertical é determinado por força máxima (1RM agachamento) e potência (capacidade de expressá-la rapidamente). Treino combinado de força + plyometria aumenta salto em 8-15cm em 12 semanas (Markovic, 2007).'},
+  {titulo:'Velocidade de reação e agilidade em quadra',desc:'Exercícios para melhorar posicionamento, deslocamento lateral e tempo de reação no vôlei.',link:'https://youtube.com/results?search_query=velocidade+reacao+agilidade+volei+exercicios',tempo:'20min',ciencia:'O tempo de reação é treinável. Treino específico de agilidade reduz tempo de reação em 15-25ms em 8 semanas. No vôlei, onde o tempo de resposta é crítico, essa diferença define recepções e bloqueios.'},
+  {titulo:'Prevenção de lesões no vôlei — ombro e joelho',desc:'Exercícios preventivos, mobilidade, fortalecimento de manguito rotador. Seu ombro agradece.',link:'https://youtube.com/results?search_query=prevencao+lesao+ombro+joelho+volei+exercicios',tempo:'25min',ciencia:'80% das lesões no vôlei são por uso excessivo (overuse), não trauma agudo. Programas de prevenção (como o NSCA Prehab) reduzem lesões em 60-70%. Fortalecimento excêntrico do manguito rotador é o mais eficaz para ombro.'},
+  {titulo:'Hábitos de alto rendimento — ciência dos hábitos',desc:'James Clear e BJ Fogg aplicados ao esporte. Como criar rotinas que se mantêm mesmo em dias difíceis.',link:'https://youtube.com/results?search_query=habitos+alto+rendimento+james+clear+atomic+habits',tempo:'30min',ciencia:'James Clear (Atomic Habits, 2018): hábitos são formados por gatilho, rotina e recompensa. Para atletas amadores, a chave é reduzir a fricção (roupa de treino já separada) e criar gatilhos claros (mesmo horário todo dia). Identidade vence motivação.'},
+  {titulo:'Composição corporal vs peso — a diferença importa',desc:'Por que a balança mente. Gordura corporal, massa magra e como monitorar o que realmente importa.',link:'https://youtube.com/results?search_query=composicao+corporal+atleta+como+avaliar+massa+magra',tempo:'20min',ciencia:'A balança mede massa total — não distingue músculo de gordura. Uma atleta pode ganhar 2kg de músculo e perder 2kg de gordura sem a balança mudar. O espelho, medidas e fotos são melhores indicadores de composição corporal para atletas.'}
+ ],
+ acoes:['Dormir às 23h esta semana — sem exceção','Registrar o que come no almoço por 7 dias','Ir ao Rise 4x essa semana — versão reduzida conta','Hidratar 2L de água por dia','Fazer os exercícios preventivos de ombro antes do vôlei'],
+ sei:['Vôlei há anos — vivência real','Musculação — treina no Rise','Importância do sono e exercício'],
+ naoSei:['Nutrição específica para atleta','Como periodizar treinos','Técnicas de prevenção de lesão sistematizadas','Como otimizar recuperação']},
+
+{id:'quemSou',nome:'Quem eu sou',cor:'#5b9cf6',meta:'Orgulho de si mesma, bonita, inteligente, capaz',
+ estudos:[
+  {titulo:'Identidade baseada em valores — ACT',desc:'Terapia de Aceitação e Compromisso: quem você é vs o que você faz. Como construir identidade sólida.',link:'https://youtube.com/results?search_query=ACT+terapia+aceitacao+compromisso+identidade+valores',tempo:'25min',ciencia:'A ACT (Hayes, 1999) mostra que identidade rígida ("eu sou uma fracassada") é fonte de sofrimento. Identidade flexível baseada em valores ("eu valorizo crescimento") gera resiliência. É a abordagem de terceira onda mais eficaz para autoconceito.'},
+  {titulo:'Neuroplasticidade — você pode se reinventar',desc:'Como o cérebro muda com novas experiências e pensamentos. A ciência por trás de "eu posso mudar".',link:'https://youtube.com/results?search_query=neuroplasticidade+como+mudar+habitos+mentais',tempo:'25min',ciencia:'O cérebro adulto mantém neuroplasticidade significativa (Doidge, 2007). Novas experiências, aprendizado e até visualização mental criam novos caminhos neurais. Você literalmente reconstrói quem é através do que pratica.'},
+  {titulo:'Autoestima baseada em evidência — não em afirmações',desc:'O que realmente aumenta autoestima: ação, competência e valores — não espelhos e frases motivacionais.',link:'https://youtube.com/results?search_query=autoestima+psicologia+cognitiva+como+aumentar+evidencia',tempo:'30min',ciencia:'Autoestima não se constrói com afirmações positivas (pesquisa de Joanne Wood, 2009 — afirmações pioram autoestima de quem já a tem baixa). Constrói-se com competência adquirida, valores vividos e ação comprometida — exatamente o que o Guia propõe.'},
+  {titulo:'Crenças limitantes — identifica e reconstrói',desc:'Como pensamentos automáticos negativos se formam e como mudar a narrativa interna.',link:'https://youtube.com/results?search_query=crencas+limitantes+psicologia+cognitiva+como+mudar',tempo:'25min',ciencia:'Crenças limitantes são generalizações formadas por experiências repetidas (Beck, Terapia Cognitiva, 1979). O pensamento "sou preguiçosa" é uma interpretação, não um fato. Reestruturação cognitiva muda esses padrões em 8-12 semanas com prática.'},
+  {titulo:'Crescimento pós-traumático — adversidade como combustível',desc:'Como dificuldades reais (dívidas, relacionamento ruim, cansaço) podem ser o motor da sua transformação.',link:'https://youtube.com/results?search_query=crescimento+pos+traumatico+psicologia+positiva+resiliencia',tempo:'25min',ciencia:'Tedeschi & Calhoun (1996): adversidade significativa frequentemente resulta em crescimento pós-traumático — maior apreciação da vida, relacionamentos mais profundos, descoberta de novas possibilidades e força pessoal. Sua história é combustível.'},
+  {titulo:'Autocompaixão — a alternativa à autocrítica',desc:'Kristin Neff: por que se tratar com gentileza aumenta performance e reduz procrastinação.',link:'https://youtube.com/results?search_query=autocompaixao+kristin+neff+como+praticar',tempo:'20min',ciencia:'Kristin Neff (2011): autocompaixão — tratar a si mesmo como trataria uma amiga — reduz autocrítica, depressão e ansiedade. Pessoas com alta autocompaixão são mais resilientes após fracassos e têm maior motivação intrínseca para melhorar.'}
+ ],
+ acoes:['Escrever 3 qualidades suas que são reais e baseadas em fatos','Identificar uma crença limitante que você repete sobre si mesma','Praticar autocompaixão: o que diria a uma amiga que passasse pelo que você passa?','Fazer uma ação pequena que te encha de orgulho hoje'],
+ sei:['Formação em psicologia — entende o ser humano','Resiliência real — chegou até aqui','Valores claros — sabe o que quer'],
+ naoSei:['Como aplicar ACT a si mesma','Técnicas de reestruturação cognitiva','Como construir autoestima de dentro pra fora']},
+
+{id:'familia',nome:'Família',cor:'#f472b6',meta:'Ser exemplo, passar tempo de qualidade, cuidar delas',
+ estudos:[
+  {titulo:'Presença real vs tempo total com filhos',desc:'A diferença entre estar presente e estar junto. Como criar conexão real em momentos curtos.',link:'https://youtube.com/results?search_query=presenca+parental+qualidade+tempo+filhos+psicologia',tempo:'20min',ciencia:'Pesquisa de Milkie et al. (2015, Journal of Marriage and Family): tempo total com filhos (especialmente mães) não impacta resultados das crianças — qualidade da presença sim. 1h de presença real vale mais que 5h de estar fisicamente no mesmo espaço.'},
+  {titulo:'Como ser o exemplo que você quer dar',desc:'Filhas aprendem mais pelo que veem do que pelo que ouvem. Como sua jornada educa as meninas.',link:'https://youtube.com/results?search_query=como+ser+exemplo+para+filhos+modelagem+comportamental',tempo:'20min',ciencia:'Bandura (Teoria da Aprendizagem Social, 1977): crianças aprendem por observação e modelagem. Você trabalhando em si mesma — treinando, estudando, se cuidando — ensina mais às suas filhas do que qualquer discurso sobre valores.'},
+  {titulo:'Saúde das filhas — acompanhamento e rotina',desc:'Como criar rotina de saúde preventiva para as meninas. Alimentação, sono, atividade física.',link:'https://youtube.com/results?search_query=saude+filhos+rotina+preventiva+alimentacao+sono+criancas',tempo:'25min',ciencia:'Hábitos de saúde formados na infância persistem na vida adulta (WHO, 2019). Crianças com rotina de sono regular têm melhor desempenho escolar, humor e imunidade. Rotina previsível reduz ansiedade infantil.'},
+  {titulo:'Comunicação não-violenta com filhas',desc:'Marshall Rosenberg: como falar de forma que as meninas ouçam. Sem grito, sem culpa.',link:'https://youtube.com/results?search_query=comunicacao+nao+violenta+filhos+como+usar',tempo:'25min',ciencia:'CNV (Rosenberg, 1999): observação + sentimento + necessidade + pedido. Famílias que praticam CNV têm menos conflitos, crianças com maior inteligência emocional e relacionamentos mais seguros (Apego seguro, Bowlby).'},
+  {titulo:'Ensinar finanças, esporte e hábitos para crianças',desc:'Como passar os valores que você está construindo para as filhas de forma prática e divertida.',link:'https://youtube.com/results?search_query=educacao+financeira+criancas+como+ensinar+habitos',tempo:'20min',ciencia:'Crianças desenvolvem hábitos financeiros básicos até os 7 anos (University of Cambridge, 2013). Exposição precoce ao esporte aumenta em 40% a probabilidade de ser ativo na vida adulta (WHO). Comece pequeno e consistente.'}
+ ],
+ acoes:['Criar um momento de presença real com as filhas hoje — sem celular, 20 min','Estabelecer uma rotina de jantar juntas 4x por semana','Perguntar sobre o dia delas com interesse genuíno','Incluir as meninas em algum hábito seu — treino leve, cozinhar saudável'],
+ sei:['Amor pelas filhas','Presença no dia a dia','Boa intencao como mãe'],
+ naoSei:['Técnicas de comunicação não-violenta','Como criar rotina estruturada para as meninas','Como ensinar hábitos de forma sistemática']},
+
+{id:'independencia',nome:'Independência',cor:'#f4a34d',meta:'Dívidas quitadas, reserva financeira, carro, apartamento',
+ estudos:[
+  {titulo:'Método bola de neve — quitar dívidas',desc:'Dave Ramsey: lista todas as dívidas do menor para o maior. Paga a menor primeiro. Snowball effect.',link:'https://youtube.com/results?search_query=metodo+bola+de+neve+dividas+como+quitar',tempo:'20min',ciencia:'O método bola de neve (Dave Ramsey) é psicologicamente superior ao método avalanche (maior juros primeiro) porque pequenas vitórias liberam dopamina e mantêm motivação. Estudos mostram 30% mais sucesso no pagamento de dívidas com esse método.'},
+  {titulo:'Orçamento baseado em zero — controle real',desc:'Cada real tem destino antes de gastar. Como criar um orçamento que funciona na prática.',link:'https://youtube.com/results?search_query=orcamento+base+zero+como+fazer+controle+financeiro',tempo:'25min',ciencia:'Orçamento baseado em zero (Pyhrr, 1970, popularizado por YNAB) reduz gastos impulsivos em 20-30% porque torna cada decisão financeira consciente. A consciência sobre para onde vai o dinheiro é o primeiro passo para mudança comportamental.'},
+  {titulo:'Renda paralela como psicóloga — sem sair do RH',desc:'Como começar a atender nos finais de semana ou à noite sem largar o emprego atual.',link:'https://youtube.com/results?search_query=psicologia+renda+extra+como+comecar+atender',tempo:'25min',ciencia:'Renda paralela antes da transição de carreira reduz risco financeiro e pressão psicológica. Estudos de empreendedorismo mostram que transições graduais têm 3x mais sucesso do que saltos repentinos. Você mantém segurança enquanto constrói.'},
+  {titulo:'Reserva de emergência — por onde começar',desc:'Por que a reserva de emergência vem antes de investimento. Como construir mesmo com dívidas.',link:'https://youtube.com/results?search_query=reserva+emergencia+como+construir+com+dividas',tempo:'20min',ciencia:'R$1.000 de reserva de emergência reduz o uso de crédito rotativo em 70% (pesquisa Commonwealth Fund). Sem reserva, qualquer imprevisto vira nova dívida. A reserva quebra o ciclo.'},
+  {titulo:'Investimentos para iniciantes — segurança primeiro',desc:'Tesouro Direto, CDB, LCI — onde colocar dinheiro de forma segura enquanto quita dívidas.',link:'https://youtube.com/results?search_query=investimentos+iniciantes+tesouro+direto+como+comecar',tempo:'30min',ciencia:'Para quem está quitando dívidas, o melhor investimento é pagar dívidas com juros altos (cartão, cheque especial) — retorno garantido de 15-20% ao ano. Após dívidas quitadas, diversificação em renda fixa antes de variável.'}
+ ],
+ acoes:['Listar todas as suas dívidas com valor e juros hoje','Lançar todos os gastos desta semana no app','Identificar um gasto que pode cortar este mês','Pesquisar quanto cobrar por sessão de psicologia do esporte na sua cidade'],
+ sei:['Consciência de que as dívidas existem','Vontade de mudar a situação'],
+ naoSei:['Valor exato de cada dívida e juros','Para onde vai cada real do salário','Como criar renda paralela rapidamente','Quanto cobrar como psicóloga do esporte']},
+
+{id:'vinculos',nome:'Vínculos',cor:'#f06868',meta:'Relacionamento saudável, amor real, parceiro que te assuma',
+ estudos:[
+  {titulo:'Apego seguro — o que é e como desenvolver',desc:'John Bowlby e Mary Ainsworth: por que você atrai o que atrai. Como mudar o padrão de apego.',link:'https://youtube.com/results?search_query=teoria+apego+adulto+como+desenvolver+apego+seguro',tempo:'30min',ciencia:'A teoria do apego (Bowlby, 1969) mostra que padrões de relacionamento se formam na infância e se repetem na vida adulta. Apego ansioso (medo de abandono) gera dependência emocional. O apego pode ser reaprendido — neuroplasticidade se aplica aqui também.'},
+  {titulo:'Dependência emocional — como reconhecer e sair',desc:'Por que você fica em relacionamentos que não te assumem. O que a dependência emocional realmente é.',link:'https://youtube.com/results?search_query=dependencia+emocional+como+superar+psicologia',tempo:'30min',ciencia:'Dependência emocional é caracterizada por baixa autoestima relacional, medo intenso de abandono e identidade construída em torno do outro (Castelló, 2005). Não é fraqueza — é padrão aprendido. A saída é construir identidade própria e autoestima interna.'},
+  {titulo:'O que você merece vs o que está aceitando',desc:'Como identificar seus valores em relacionamentos e o que não é negociável para você.',link:'https://youtube.com/results?search_query=valores+relacionamento+o+que+mereco+autoestima+amor',tempo:'20min',ciencia:'A Harvard Study of Adult Development (85 anos de pesquisa) mostrou que a qualidade dos relacionamentos é o fator número 1 de felicidade e longevidade — acima de dinheiro, fama e sucesso. Você não merece um relacionamento mediano.'},
+  {titulo:'Limites saudáveis — como colocar sem culpa',desc:'O que são limites, como comunicar, e por que colocar limites é um ato de amor — por si e pelo outro.',link:'https://youtube.com/results?search_query=limites+saudaveis+relacionamentos+como+colocar',tempo:'25min',ciencia:'Limites saudáveis reduzem ressentimento, aumentam respeito mútuo e são preditores de satisfação relacional (Gottman Institute). Pessoas sem limites entram em exaustão e geram relacionamentos desiquilibrados. Limite não é muralha — é janela.'},
+  {titulo:'Autoestima e amor próprio — a base de tudo',desc:'Por que você precisa ser sua prioridade antes de ser a prioridade de alguém. Sem clichê.',link:'https://youtube.com/results?search_query=autoestima+amor+proprio+como+construir+base+relacionamentos',tempo:'25min',ciencia:'Pesquisa de Murray et al. (2000): pessoas com alta autoestima percebem mais amor e cuidado dos parceiros, são menos reativas a rejeição e têm relacionamentos mais satisfatórios. Autoestima não é egoísmo — é pré-requisito para amar bem.'}
+ ],
+ acoes:['Escrever o que você não aceita mais em um relacionamento — seja honesta','Identificar seu padrão de apego (ansioso, evitativo ou seguro)','Tomar uma decisão sobre o relacionamento atual — não precisa ser agora, mas precisa de data','Fazer uma coisa hoje só pra você, por você'],
+ sei:['O que não quer — um relacionamento que não te assume','Que merece amor de verdade'],
+ naoSei:['Por que repete padrões','Como sair da dependência emocional','Como colocar limites sem culpa','O que realmente quer em um parceiro']},
+
+{id:'presenca',nome:'Presença',cor:'#3dd6c8',meta:'Conexão com Deus, natureza, energia renovada',
+ estudos:[
+  {titulo:'Espiritualidade e saúde mental — o que a ciência diz',desc:'Não é esoterismo. Pesquisas sérias sobre como espiritualidade impacta bem-estar, resiliência e saúde.',link:'https://youtube.com/results?search_query=espiritualidade+saude+mental+pesquisa+cientifica',tempo:'20min',ciencia:'Harold Koenig (Duke University): mais de 1.200 estudos mostram que espiritualidade reduz depressão, ansiedade, abuso de substâncias e aumenta esperança e sentido de vida. A fé não é irracional — é um recurso psicológico real.'},
+  {titulo:'Oração e meditação — efeitos no cérebro',desc:'O que acontece no cérebro durante a oração. Neurociência da fé e da contemplação.',link:'https://youtube.com/results?search_query=oracao+meditacao+efeitos+cerebro+neurociencia',tempo:'20min',ciencia:'Andrew Newberg (neuroteologia): oração e meditação reduzem atividade do cortisol, aumentam ondas alfa (relaxamento), ativam córtex pré-frontal (regulação emocional). 20 minutos diários mudam estrutura cerebral em 8 semanas.'},
+  {titulo:'Natureza e restauração mental',desc:'Por que estar na natureza restaura energia e reduz estresse. Como incluir isso na rotina urbana.',link:'https://youtube.com/results?search_query=natureza+saude+mental+restauracao+estresse+pesquisa',tempo:'15min',ciencia:'Rachel & Stephen Kaplan (Teoria da Restauração da Atenção): ambientes naturais restauram capacidade atencional esgotada. 20 minutos em contato com natureza reduz cortisol em 13.4%. Mesmo parque urbano conta.'},
+  {titulo:'Gratidão e fé — práticas concretas',desc:'Como criar uma prática espiritual real, não genérica. Oração, gratidão, silêncio, conexão.',link:'https://youtube.com/results?search_query=pratica+espiritual+gratidao+como+criar+rotina',tempo:'20min',ciencia:'Emmons & McCullough (2003): pessoas que praticam gratidão sistematicamente têm 25% mais bem-estar, dormem melhor, se exercitam mais e são mais otimistas. Gratidão como prática espiritual potencializa esses efeitos.'},
+  {titulo:'Silêncio e energia — como recarregar',desc:'Por que você precisa de momentos de silêncio. Como criar espaço de recarga numa vida cheia.',link:'https://youtube.com/results?search_query=silencio+meditacao+recarga+energia+como+praticar',tempo:'15min',ciencia:'Susan Cain (Quiet, 2012): introversão e recarga em silêncio são necessidades biológicas para muitas pessoas. Silêncio reduz pressão sanguínea, frequência cardíaca e estimula crescimento de células cerebrais no hipocampo (memória e aprendizado).'}
+ ],
+ acoes:['Reservar 10 minutos amanhã cedo para oração ou silêncio','Ir a um parque ou espaço verde essa semana','Retomar uma prática espiritual que abandonou','Criar um ritual de fim de dia — gratidão, oração, desconexão do celular'],
+ sei:['Crença em Deus e desejo de conexão','Que silêncio e natureza te fazem bem'],
+ naoSei:['Como criar prática espiritual consistente','Como integrar espiritualidade na rotina corrida','Técnicas de oração contemplativa']},
+
+{id:'acao',nome:'Ação',cor:'#f4e04d',meta:'Executar sem travar, urgente vs importante, momentum',
+ estudos:[
+  {titulo:'Por que procrastinamos — neurociência real',desc:'Não é preguiça. É regulação emocional. O que o cérebro faz quando procrastina.',link:'https://youtube.com/results?search_query=procrastinacao+neurociencia+por+que+acontece+real',tempo:'20min',ciencia:'Fuschia Sirois (2014): procrastinação é um problema de regulação emocional, não de gestão do tempo. O cérebro evita tarefas que geram ansiedade ou desconforto. A solução não é disciplina — é reduzir a ameaça emocional percebida.'},
+  {titulo:'BJ Fogg — menor ação possível',desc:'Tiny Habits: como começar qualquer hábito com a versão minúscula. A menor ação ganha da motivação.',link:'https://youtube.com/results?search_query=BJ+Fogg+tiny+habits+menor+acao+possivel',tempo:'20min',ciencia:'BJ Fogg (Stanford): motivação é não confiável. Design comportamental é o que funciona. Começar com a versão menor possível (2 minutos) ativa o sistema de recompensa e cria momentum. Fazer 1 flexão é infinitamente melhor do que não fazer nada.'},
+  {titulo:'Matriz urgente x importante — Eisenhower',desc:'Como decidir o que fazer primeiro. Por que o urgente engole o importante e como inverter isso.',link:'https://youtube.com/results?search_query=matriz+eisenhower+urgente+importante+como+usar',tempo:'15min',ciencia:'A Matriz de Eisenhower divide tarefas em 4 quadrantes. Estudos de produtividade mostram que pessoas bem-sucedidas passam 65-80% do tempo no Quadrante 2 (importante, não urgente) — onde está sua carreira, saúde e relacionamentos.'},
+  {titulo:'Momentum — como manter o ritmo nos dias difíceis',desc:'Por que começar é mais difícil do que continuar. Como criar sistemas que funcionam sem motivação.',link:'https://youtube.com/results?search_query=momentum+habitos+como+manter+ritmo+dias+dificeis',tempo:'20min',ciencia:'Newton aplicado ao comportamento: um objeto em movimento tende a permanecer em movimento. Cada pequena ação torna a próxima mais fácil — neuralmente, ativa o circuito motor e reduz a resistência. A primeira ação é sempre a mais difícil.'},
+  {titulo:'Proteção de tempo — blocos de foco',desc:'Como bloquear tempo para o que importa antes que o urgente ocupe tudo.',link:'https://youtube.com/results?search_query=time+blocking+como+usar+protecao+de+tempo+produtividade',tempo:'20min',ciencia:'Cal Newport (Deep Work, 2016): trabalho profundo e focado é cada vez mais raro e mais valioso. 4h de foco profundo produzem mais do que 8h de trabalho fragmentado. Bloquear tempo no calendário aumenta conclusão de tarefas em 40%.'}
+ ],
+ acoes:['Listar hoje as 3 coisas mais importantes da sua semana — não as mais urgentes','Usar o Pomodoro por 25 min para a tarefa mais travada','Antes de dormir, escrever UMA coisa que vai fazer amanhã de manhã','Dizer não para uma coisa que não é prioridade essa semana'],
+ sei:['Que procrastinação é um padrão seu','Vontade de mudar','Que pequenas ações geram resultado'],
+ naoSei:['Como quebrar o ciclo de procrastinação','Como proteger tempo para o que importa','Como decidir prioridades de forma sistemática']}
+];
+
+// STATE
+var S={
+  registros:[],energia:null,conquistas:[],gratidoes:[],
+  finLancamentos:[],dividas:[],
+  procItens:[],
+  revisoes:[],
+  pilaresProgresso:{psico:0,atleta:0,quemSou:0,familia:0,independencia:0,vinculos:0,presenca:0,acao:0},
+  pilaresEstudoIdx:{psico:0,atleta:0,quemSou:0,familia:0,independencia:0,vinculos:0,presenca:0,acao:0},
+  ultimoRegistro:null,_doneSel:{}
+};
+function load(){try{var d=localStorage.getItem('guia_v1');if(d)S=Object.assign(S,JSON.parse(d));}catch(e){}}
+function save(){try{localStorage.setItem('guia_v1',JSON.stringify(S));}catch(e){}}
+load();
+
+// NAV
+function showPage(p){
+  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(el){el.classList.remove('on');});
+  var pg=document.getElementById('page-'+p);if(pg)pg.classList.add('on');
+  var nb=document.getElementById('nb-'+p);if(nb)nb.classList.add('on');
+  document.getElementById('mainScroll').scrollTop=0;
+  if(p==='home')renderHome();
+  if(p==='registro')renderRegistro();
+  if(p==='evol')renderEvol();
+  if(p==='ferramentas')renderFerramentas();
+  if(p==='conquistas')renderConquistas();
+}
+
+// DATES
+function hoje(){return new Date();}
+function diasSemFazer(id){
+  var last=null;
+  S.registros.forEach(function(r){if(r.pilares&&r.pilares[id]&&r.pilares[id].length>0){var d=new Date(r.date);if(!last||d>last)last=d;}});
+  if(!last)return 999;
+  return Math.floor((new Date()-last)/(24*3600*1000));
+}
+
+// HOME
+function renderHome(){
+  var now=new Date();
+  document.getElementById('todayPill').textContent=DN[now.getDay()]+' '+now.getDate()+'/'+MN[now.getMonth()];
+  document.getElementById('homeSub').textContent='Olá, Alice. Cada ação te aproxima de quem você quer ser.';
+  renderAlertas();
+  renderFocoDia();
+  renderPilaresHome();
+}
+
+function renderAlertas(){
+  var alertas=[];
+  PILARES.forEach(function(p){
+    var dias=diasSemFazer(p.id);
+    var prog=S.pilaresProgresso[p.id]||0;
+    if(dias>=4&&dias<999){alertas.push({tipo:'warn',title:'Você não avançou em '+p.nome+' há '+dias+' dias.',text:'A Alice que você quer ser avançaria hoje. Um passo pequeno agora — só um.'});}
+    if(dias===999&&prog===0){alertas.push({tipo:'info',title:p.nome+' — ainda não começou.',text:'Este pilar está parado. O que te trava aqui? Use Ferramentas → Antiprocrastinação.'});}
+  });
+  // Financeiro
+  var hoje2=new Date().toDateString();
+  var lancouHoje=S.finLancamentos.some(function(l){return new Date(l.date).toDateString()===hoje2;});
+  if(!lancouHoje&&new Date().getHours()>=18){alertas.push({tipo:'warn',title:'Você não lançou gastos hoje.',text:'Controle financeiro é diário. 2 minutos agora salvam R$ no futuro.'});}
+  // Energia
+  var reg=S.registros.length?S.registros[0]:null;
+  if(reg&&reg.energia&&reg.energia<=2){alertas.push({tipo:'urgent',title:'Você está com energia baixa ('+reg.energia+'/5).',text:'Com energia abaixo de 3, o cérebro não aprende nem cria bem. Priorize sono esta noite. O Guia pode esperar — você não pode.'});}
+  var html='';
+  alertas.slice(0,2).forEach(function(a){
+    var cls={urgent:'al-urgent',warn:'al-warn',ok:'al-ok',info:'al-info'}[a.tipo];
+    html+='<div class="alert-strip '+cls+'"><div class="al-title">'+a.title+'</div><div class="al-text">'+a.text+'</div></div>';
+  });
+  document.getElementById('alertasFeed').innerHTML=html;
+}
+
+function renderFocoDia(){
+  // Escolhe o pilar mais parado com maior importância
+  var candidatos=PILARES.map(function(p){return{p:p,dias:diasSemFazer(p.id),prog:S.pilaresProgresso[p.id]||0};});
+  candidatos.sort(function(a,b){return b.dias-a.dias;});
+  var foco=candidatos[0];
+  var p=foco.p;
+  var idx=S.pilaresEstudoIdx[p.id]||0;
+  if(idx>=p.estudos.length)idx=0;
+  var estudo=p.estudos[idx];
+  document.getElementById('focusEyebrow').textContent=p.nome.toUpperCase();
+  document.getElementById('focusTitle').textContent=estudo.titulo;
+  document.getElementById('focusSub').textContent=foco.dias<999?'Você está '+foco.dias+' dias sem avançar aqui. '+estudo.desc:estudo.desc;
+  document.getElementById('focusCard').style.borderColor=p.cor;
+  document.getElementById('focusCard').style.background='color-mix(in srgb, '+p.cor+' 8%, var(--bg))';
+  window._focoPilarId=p.id;
+}
+window._focoPilarId=null;
+function goFocusPilar(){if(window._focoPilarId)openPilar(window._focoPilarId);}
+
+function renderPilaresHome(){
+  var html='';
+  PILARES.forEach(function(p){
+    var prog=S.pilaresProgresso[p.id]||0;
+    var dias=diasSemFazer(p.id);
+    var metric=dias<999?dias+'d sem avançar':'não iniciado';
+    var metricCol=dias>=7?'var(--red)':dias>=3?'var(--orange)':'var(--green)';
+    if(dias===999)metricCol='var(--muted)';
+    html+='<div class="pilar-row" onclick="openPilar(\''+p.id+'\')" style="cursor:pointer">';
+    html+='<div class="pilar-dot" style="background:'+p.cor+'"></div>';
+    html+='<div class="pilar-name">'+p.nome+'</div>';
+    html+='<div class="pilar-metric" style="color:'+metricCol+'">'+metric+'</div>';
+    html+='<div class="pilar-bar"><div class="pilar-fill" style="width:'+prog+'%;background:'+p.cor+'"></div></div>';
+    html+='</div>';
+  });
+  document.getElementById('pilaresHome').innerHTML=html;
+}
+
+// PILAR DETAIL
+function openPilar(id){
+  var p=PILARES.find(function(x){return x.id===id;});
+  if(!p)return;
+  var idx=S.pilaresEstudoIdx[id]||0;
+  if(idx>=p.estudos.length)idx=0;
+  var estudo=p.estudos[idx];
+  var prog=S.pilaresProgresso[id]||0;
+  var html='';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">';
+  html+='<div style="width:10px;height:10px;border-radius:50%;background:'+p.cor+';flex-shrink:0"></div>';
+  html+='<div style="font-size:17px;font-weight:700">'+p.nome+'</div>';
+  html+='</div>';
+  html+='<div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.55">Meta: <b style="color:var(--text)">'+p.meta+'</b></div>';
+  html+='<div class="pd-level">Nível atual: '+Math.round(prog)+'% → Meta: especialista completa</div>';
+
+  // Sabe vs nao sabe
+  html+='<div class="pd-know">';
+  html+='<div class="pd-know-box" style="background:rgba(77,207,138,0.06);border:1px solid rgba(77,207,138,0.15)">';
+  html+='<div class="pd-know-label" style="color:var(--green)">Você já sabe</div>';
+  html+='<div class="pd-know-items" style="color:var(--muted)">'+p.sei.join('<br>')+'</div>';
+  html+='</div>';
+  html+='<div class="pd-know-box" style="background:rgba(240,104,104,0.06);border:1px solid rgba(240,104,104,0.15)">';
+  html+='<div class="pd-know-label" style="color:var(--red)">Ainda vai aprender</div>';
+  html+='<div class="pd-know-items" style="color:var(--muted)">'+p.naoSei.join('<br>')+'</div>';
+  html+='</div>';
+  html+='</div>';
+
+  // Estudo atual
+  html+='<div class="sl" style="margin-top:4px">Estudar agora ('+(idx+1)+'/'+p.estudos.length+')</div>';
+  html+='<div class="pd-study-card">';
+  html+='<div class="pd-study-eyebrow">'+p.nome+' · '+estudo.tempo+'</div>';
+  html+='<div class="pd-study-title">'+estudo.titulo+'</div>';
+  html+='<div class="pd-study-desc">'+estudo.desc+'</div>';
+  html+='<div class="pd-science"><b>Por que estudar isso?</b> '+estudo.ciencia+'</div>';
+  html+='<div class="pd-btn-row">';
+  html+='<a href="'+estudo.link+'" target="_blank" style="flex:1;padding:9px;border-radius:var(--rs);background:'+p.cor+';color:#080810;font-size:11px;font-weight:700;text-align:center;text-decoration:none;display:block">▶ Estudar agora</a>';
+  html+='<button onclick="marcarEstudado(\''+id+'\')" class="pd-btn pd-btn-sec" style="flex:1">✓ Estudei isso</button>';
+  html+='</div></div>';
+
+  // Proximas acoes
+  html+='<div class="sl" style="margin-top:4px">Próximas ações</div>';
+  html+='<div class="card" style="padding:10px 14px">';
+  p.acoes.forEach(function(a,i){
+    html+='<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:'+(i<p.acoes.length-1?'1px solid var(--border)':'none')+'">';
+    html+='<div style="width:16px;height:16px;border-radius:4px;border:1px solid rgba(167,139,250,.3);background:var(--acc-dim);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--acc)">'+(i+1)+'</div>';
+    html+='<div style="font-size:11px;color:var(--muted);line-height:1.5">'+a+'</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<button onclick="showPage(\'home\')" style="width:100%;padding:12px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;margin-top:10px">← Voltar</button>';
+
+  document.getElementById('pilarDetail').innerHTML=html;
+  showPage('pilar');
+}
+
+function marcarEstudado(id){
+  if(!S.pilaresEstudoIdx)S.pilaresEstudoIdx={};
+  var idx=(S.pilaresEstudoIdx[id]||0)+1;
+  var p=PILARES.find(function(x){return x.id===id;});
+  if(idx>=p.estudos.length)idx=p.estudos.length-1;
+  S.pilaresEstudoIdx[id]=idx;
+  // Increase progress
+  var prog=S.pilaresProgresso[id]||0;
+  prog=Math.min(100,prog+(100/p.estudos.length));
+  S.pilaresProgresso[id]=Math.round(prog);
+  save();
+  openPilar(id);
+}
+
+// REGISTRO
+function setEnergy(n){S.energia=n;save();document.querySelectorAll('.eb').forEach(function(b,i){b.classList.toggle('esel',i+1===n);});}
+
+function renderRegistro(){
+  if(S.energia)document.querySelectorAll('.eb').forEach(function(b,i){b.classList.toggle('esel',i+1===S.energia);});
+  var html='';
+  PILARES.forEach(function(p){
+    var idx=S.pilaresEstudoIdx[p.id]||0;
+    if(idx>=p.estudos.length)idx=p.estudos.length-1;
+    var estudo=p.estudos[idx];
+    html+='<div class="reg-pilar">';
+    html+='<div class="reg-pilar-top" onclick="toggleRegPilar(\'rp_'+p.id+'\')">';
+    html+='<div style="width:8px;height:8px;border-radius:50%;background:'+p.cor+';flex-shrink:0"></div>';
+    html+='<div class="reg-pilar-name">'+p.nome+'</div>';
+    html+='<div class="reg-pilar-arrow" id="rpa_'+p.id+'">›</div>';
+    html+='</div>';
+    html+='<div class="reg-pilar-body" id="rp_'+p.id+'">';
+    // Sugestoes baseadas nas acoes do pilar
+    p.acoes.slice(0,3).forEach(function(a,i){
+      html+='<div class="reg-item" onclick="toggleRegItem(\'ri_'+p.id+'_'+i+'\')">';
+      html+='<div class="reg-check" id="ri_'+p.id+'_'+i+'"></div>';
+      html+='<div class="reg-item-text">'+a+'</div>';
+      html+='</div>';
+    });
+    // Estudo
+    html+='<div class="reg-item" onclick="toggleRegItem(\'ri_'+p.id+'_est\')">';
+    html+='<div class="reg-check" id="ri_'+p.id+'_est"></div>';
+    html+='<div class="reg-item-text">Estudei: '+estudo.titulo+' ('+estudo.tempo+')</div>';
+    html+='</div>';
+    html+='</div></div>';
+  });
+  document.getElementById('regPilares').innerHTML=html;
+}
+
+function toggleRegPilar(id){
+  var el=document.getElementById(id);if(!el)return;
+  var open=el.classList.contains('open');
+  document.querySelectorAll('.reg-pilar-body').forEach(function(b){b.classList.remove('open');});
+  document.querySelectorAll('.reg-pilar-arrow').forEach(function(a){a.classList.remove('open');});
+  if(!open){el.classList.add('open');var pid=id.replace('rp_','');var arr=document.getElementById('rpa_'+pid);if(arr)arr.classList.add('open');}
+}
+
+function toggleRegItem(id){
+  var el=document.getElementById(id);if(!el)return;
+  el.classList.toggle('done');
+  var txt=el.nextElementSibling;if(txt)txt.classList.toggle('done');
+}
+
+function saveRegistro(){
+  var pilares={};
+  PILARES.forEach(function(p){
+    var feitos=[];
+    p.acoes.slice(0,3).forEach(function(a,i){var el=document.getElementById('ri_'+p.id+'_'+i);if(el&&el.classList.contains('done'))feitos.push(a);});
+    var est=document.getElementById('ri_'+p.id+'_est');
+    if(est&&est.classList.contains('done'))feitos.push('estudo');
+    pilares[p.id]=feitos;
+    // Update progress based on actions done
+    if(feitos.length>0){
+      var prog=S.pilaresProgresso[p.id]||0;
+      prog=Math.min(100,prog+feitos.length*2);
+      S.pilaresProgresso[p.id]=Math.round(prog);
+    }
+  });
+  S.registros.unshift({date:new Date().toISOString(),energia:S.energia,pilares:pilares});
+  S.ultimoRegistro=new Date().toISOString();
+  S.energia=null;save();
+  showPage('home');
+}
+
+// EVOLUCAO
+function renderEvol(){
+  var html='';
+  PILARES.forEach(function(p){
+    var prog=S.pilaresProgresso[p.id]||0;
+    var dias=diasSemFazer(p.id);
+    html+='<div class="rev-stat" onclick="openPilar(\''+p.id+'\')" style="cursor:pointer">';
+    html+='<div class="rev-stat-top">';
+    html+='<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:'+p.cor+'"></div><div class="rev-pilar-name">'+p.nome+'</div></div>';
+    html+='<div class="rev-trend" style="color:'+(prog>=50?'var(--green)':prog>=20?'var(--orange)':'var(--muted)')+'">'+Math.round(prog)+'%</div>';
+    html+='</div>';
+    html+='<div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:8px"><div style="height:100%;background:'+p.cor+';border-radius:2px;width:'+prog+'%"></div></div>';
+    html+='<div class="rev-items">';
+    html+=dias<999?'Última ação: '+dias+' dia'+(dias!==1?'s':'')+' atrás':'Ainda não iniciado';
+    html+='</div></div>';
+  });
+  document.getElementById('evolPilares').innerHTML=html;
+
+  // Revisao
+  var rev=S.revisoes.length?S.revisoes[S.revisoes.length-1]:null;
+  var diasRev=rev?Math.floor((new Date()-new Date(rev.date))/(24*3600*1000)):999;
+  var html2='';
+  if(diasRev>=15||!rev){
+    html2='<div class="card" style="margin-bottom:8px"><div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.55">'+(diasRev>=15?'Han '+diasRev+' dias desde a última revisão.':'Sua primeira revisão quinzenal.')+' Como foram esses dias em cada pilar?</div><button onclick="openRevisao()" style="width:100%;padding:11px;border-radius:var(--rs);border:none;background:var(--acc);color:#080810;font-size:13px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">Fazer revisão quinzenal →</button></div>';
+  } else {
+    html2='<div class="card"><div style="font-size:11px;color:var(--muted)">Próxima revisão em '+(15-diasRev)+' dias.</div></div>';
+  }
+  document.getElementById('revisaoWrap').innerHTML=html2;
+}
+
+// FERRAMENTAS
+function renderFerramentas(){renderFinResumo();renderProcList();}
+
+// PROCRASTINAÇÃO
+var PROC_ANALISE={
+  medo:{titulo:'Medo de errar',texto:'Seu cérebro está evitando a tarefa para se proteger de uma ameaça imaginada (julgamento, fracasso). A neurociência chama isso de evitação experiencial.',acao:'Menor ação possível: abra o arquivo/caderno e escreva apenas o título. Não precisa fazer nada além disso agora. A ação física quebra o bloqueio neural.'},
+  grande:{titulo:'Parece grande demais',texto:'Tarefas grandes ativam o córtex pré-frontal com sobrecarga cognitiva — o cérebro congela. Isso não é fraqueza, é arquitetura cerebral.',acao:'Menor ação possível: quebre em 3 partes. Escolha APENAS a primeira parte. Ignore as outras por enquanto. Foco em uma coisa reduz sobrecarga em 60%.'},
+  cansaco:{titulo:'Cansaço',texto:'Com energia baixa, o córtex pré-frontal — responsável por iniciativa e planejamento — funciona com capacidade reduzida. Não é falta de disciplina.',acao:'Menor ação possível: 15 minutos agora, depois pausa obrigatória. Ou adiar para amanhã cedo (sono restaura o pré-frontal). Cansada fazendo o mínimo vale mais do que não fazer nada.'},
+  clareza:{titulo:'Falta de clareza',texto:'Sem saber exatamente o que fazer, o cérebro evita para não desperdiçar energia. É um mecanismo de proteção.',acao:'Menor ação possível: escreva em uma frase o que seria "feito" — o resultado final. Clareza sobre o destino ativa o mapa mental para chegar lá.'},
+  perfec:{titulo:'Perfeccionismo',texto:'Perfeccionismo é medo de julgamento disfarçado de padrão alto. O cérebro prefere não começar a entregar algo imperfeito.',acao:'Menor ação possível: crie uma versão ruim de propósito. Esboço, rascunho, 60% de qualidade. Feito e imperfeito gera aprendizado. Não feito gera nada.'},
+  inicio:{titulo:'Não sei por onde começar',texto:'Sem ponto de entrada claro, o sistema de ativação reticular do cérebro não sabe para onde direcionar atenção.',acao:'Menor ação possível: a ação mais óbvia e simples da tarefa — mesmo que não seja a "certa". Qualquer começo é melhor que nenhum. Você pode corrigir o rumo andando.'}
+};
+
+function analisarProc(){
+  var input=document.getElementById('procInput').value.trim();
+  var categ=document.getElementById('procCateg').value;
+  var motivo=document.getElementById('procMotivo').value;
+  if(!input){alert('Descreve o que está travado.');return;}
+  var analise=PROC_ANALISE[motivo]||PROC_ANALISE.inicio;
+  var item={id:Date.now(),texto:input,categ:categ||'outro',motivo:motivo||'inicio',date:new Date().toISOString(),feito:false};
+  S.procItens.unshift(item);save();
+  var tagCols={trabalho:'var(--blue)',estudo:'var(--acc)',casa:'var(--green)',financeiro:'var(--orange)',saude:'var(--green)',familia:'var(--pink)',outro:'var(--muted)'};
+  var col=tagCols[categ]||'var(--muted)';
+  var html='<div class="proc-item">';
+  html+='<div class="proc-top"><div class="proc-title">'+input+'</div><div class="proc-tag" style="background:color-mix(in srgb,'+col+' 12%,transparent);color:'+col+'">'+analise.titulo+'</div></div>';
+  html+='<div class="proc-why">'+analise.texto+'</div>';
+  html+='<div class="proc-action"><b>Agora:</b> '+analise.acao+'</div>';
+  html+='</div>';
+  document.getElementById('procResult').innerHTML=html;
+  document.getElementById('procInput').value='';
+  renderProcList();
+}
+
+function renderProcList(){
+  var pending=S.procItens.filter(function(i){return !i.feito;}).slice(0,5);
+  if(!pending.length){document.getElementById('procList').innerHTML='';return;}
+  var html='<div class="sl" style="margin-top:8px">Travamentos pendentes</div>';
+  pending.forEach(function(item){
+    html+='<div class="card" style="padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+    html+='<div style="flex:1;font-size:11px;color:var(--muted)">'+item.texto+'</div>';
+    html+='<button onclick="marcarProcFeito('+item.id+')" style="padding:5px 10px;border-radius:var(--rx);border:none;background:var(--green-dim);color:var(--green);font-size:10px;font-family:DM Mono,monospace;cursor:pointer">Feito ✓</button>';
+    html+='</div>';
+  });
+  document.getElementById('procList').innerHTML=html;
+}
+
+function marcarProcFeito(id){
+  S.procItens.forEach(function(i){if(i.id===id)i.feito=true;});
+  save();
+  // Add conquista
+  var item=S.procItens.find(function(i){return i.id===id;});
+  if(item)S.conquistas.unshift({texto:'Destravar: '+item.texto,pilar:'acao',date:new Date().toISOString(),emoji:'⚡'});
+  save();renderProcList();
+}
+
+// POMODORO
+var _pomoInt=null,_pomoSec=0,_pomoTotal=0,_pomoMode='foco',_pomoBreak=5,_pomoWork=25;
+function setPomoDur(min){
+  _pomoWork=min;_pomoBreak=min<=25?5:min<=45?10:15;
+  ['pd25','pd45','pd60'].forEach(function(id){
+    var el=document.getElementById(id);if(el){el.style.background='transparent';el.style.color='var(--muted)';el.style.borderColor='var(--border)';}
+  });
+  var btn=document.getElementById('pd'+min);
+  if(btn){btn.style.background='var(--acc-dim)';btn.style.color='var(--acc)';btn.style.borderColor='rgba(167,139,250,.3)';}
+  pomodoroStop();
+}
+function pomodoroStart(){
+  if(_pomoInt)return;
+  _pomoMode='foco';_pomoSec=_pomoWork*60;_pomoTotal=_pomoWork*60;
+  document.getElementById('pomoSub').textContent='foco';
+  document.getElementById('pomoContext').textContent=_pomoWork+'min foco · '+_pomoBreak+'min pausa';
+  document.getElementById('pomoStartBtn').textContent='Em andamento...';
+  document.getElementById('pomoArc').style.stroke='#a78bfa';
+  _pomoInt=setInterval(function(){
+    _pomoSec--;
+    var m=Math.floor(_pomoSec/60);var s=_pomoSec%60;
+    document.getElementById('pomoNum').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    var p=_pomoTotal>0?_pomoSec/_pomoTotal:0;
+    document.getElementById('pomoArc').style.strokeDashoffset=((1-p)*352).toFixed(1);
+    if(_pomoSec<=0){
+      clearInterval(_pomoInt);_pomoInt=null;
+      if(_pomoMode==='foco'){_pomoMode='pausa';_pomoSec=_pomoBreak*60;_pomoTotal=_pomoBreak*60;document.getElementById('pomoSub').textContent='pausa';document.getElementById('pomoArc').style.stroke='#4dcf8a';document.getElementById('pomoStartBtn').textContent='Iniciar foco';pomodoroStart();}
+      else{document.getElementById('pomoNum').textContent=_pomoWork+':00';document.getElementById('pomoSub').textContent='foco';document.getElementById('pomoStartBtn').textContent='Iniciar foco';document.getElementById('pomoArc').style.strokeDashoffset='0';}
+      try{var ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.2,.4].forEach(function(t){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=660;g.gain.setValueAtTime(.3,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.2);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.25);});}catch(e){}
+    }
+  },1000);
+}
+function pomodoroStop(){clearInterval(_pomoInt);_pomoInt=null;_pomoSec=_pomoWork*60;document.getElementById('pomoNum').textContent=_pomoWork+':00';document.getElementById('pomoSub').textContent='foco';document.getElementById('pomoStartBtn').textContent='Iniciar foco';document.getElementById('pomoArc').style.strokeDashoffset='0';}
+
+// FINANCEIRO
+function lancarGasto(){
+  var desc=document.getElementById('finDesc').value.trim();
+  var val=parseFloat(document.getElementById('finVal').value);
+  var categ=document.getElementById('finCateg').value;
+  var tipo=document.getElementById('finTipo').value;
+  if(!desc||!val){alert('Preenche descrição e valor.');return;}
+  S.finLancamentos.unshift({desc:desc,val:val,categ:categ,tipo:tipo,date:new Date().toISOString()});
+  save();document.getElementById('finDesc').value='';document.getElementById('finVal').value='';
+  renderFinResumo();
+}
+function renderFinResumo(){
+  var hoje2=new Date().toDateString();
+  var semana=new Date();semana.setDate(semana.getDate()-7);
+  var lancHoje=S.finLancamentos.filter(function(l){return new Date(l.date).toDateString()===hoje2;});
+  var lancSem=S.finLancamentos.filter(function(l){return new Date(l.date)>=semana;});
+  var totalHoje=lancHoje.filter(function(l){return l.tipo==='gasto';}).reduce(function(a,b){return a+b.val;},0);
+  var totalSem=lancSem.filter(function(l){return l.tipo==='gasto';}).reduce(function(a,b){return a+b.val;},0);
+  var totalRec=lancSem.filter(function(l){return l.tipo==='receita';}).reduce(function(a,b){return a+b.val;},0);
+  var html='<div class="fin-card" style="margin-bottom:8px">';
+  html+='<div class="fin-row"><span class="fin-label">Gastos hoje</span><span class="fin-val" style="color:var(--red)">R$ '+totalHoje.toFixed(2)+'</span></div>';
+  html+='<div class="fin-row"><span class="fin-label">Gastos esta semana</span><span class="fin-val" style="color:var(--orange)">R$ '+totalSem.toFixed(2)+'</span></div>';
+  html+='<div class="fin-row"><span class="fin-label">Receitas esta semana</span><span class="fin-val" style="color:var(--green)">R$ '+totalRec.toFixed(2)+'</span></div>';
+  html+='<div class="fin-row"><span class="fin-label">Saldo da semana</span><span class="fin-val" style="color:'+(totalRec-totalSem>=0?'var(--green)':'var(--red)')+'">R$ '+(totalRec-totalSem).toFixed(2)+'</span></div>';
+  html+='</div>';
+  // Últimos lançamentos
+  if(S.finLancamentos.length){
+    html+='<div class="sl">Últimos lançamentos</div>';
+    S.finLancamentos.slice(0,8).forEach(function(l){
+      var d=new Date(l.date);var ds=d.getDate()+'/'+MN[d.getMonth()];
+      var col=l.tipo==='receita'?'var(--green)':l.tipo==='divida'?'var(--orange)':'var(--red)';
+      var sinal=l.tipo==='receita'?'+':'-';
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px">';
+      html+='<div style="flex:1;color:var(--text)">'+l.desc+'</div>';
+      html+='<div style="font-size:9px;color:var(--muted);font-family:DM Mono,monospace">'+ds+'</div>';
+      html+='<div style="font-family:DM Mono,monospace;color:'+col+'">'+sinal+'R$'+l.val.toFixed(2)+'</div>';
+      html+='</div>';
+    });
+  }
+  document.getElementById('finResumo').innerHTML=html;
+  if(document.getElementById('finList'))document.getElementById('finList').innerHTML='';
+}
+
+// CONQUISTAS
+function addConquista(){
+  var txt=document.getElementById('conquInput').value.trim();
+  if(!txt){alert('Descreve sua vitória!');return;}
+  var pilar=document.getElementById('conquPilar').value;
+  var emojis={psico:'🎓',atleta:'💪',quemSou:'🧠',familia:'❤️',independencia:'💰',vinculos:'🤝',presenca:'🌿',acao:'⚡',geral:'🏆'};
+  S.conquistas.unshift({texto:txt,pilar:pilar,date:new Date().toISOString(),emoji:emojis[pilar]||'🏆'});
+  save();document.getElementById('conquInput').value='';renderConquistas();
+}
+function renderConquistas(){
+  if(!S.conquistas.length){document.getElementById('conquistasList').innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px">Nenhuma vitória registrada ainda.<br>A primeira começa agora.</div>';return;}
+  var html='';
+  S.conquistas.slice(0,20).forEach(function(c){
+    var d=new Date(c.date);var ds=d.getDate()+'/'+MN[d.getMonth()]+'/'+d.getFullYear();
+    html+='<div class="conquista-card"><div class="conquista-emoji">'+c.emoji+'</div><div><div class="conquista-title">'+c.texto+'</div><div class="conquista-date">'+ds+'</div></div></div>';
+  });
+  document.getElementById('conquistasList').innerHTML=html;
+}
+
+// GRATIDÃO
+function openGratidao(){document.getElementById('gratText').value='';document.getElementById('modalGratidao').classList.add('open');}
+function saveGratidao(){
+  var txt=document.getElementById('gratText').value.trim();
+  if(!txt)return;
+  S.gratidoes.unshift({texto:txt,date:new Date().toISOString()});
+  save();closeAll();
+}
+
+// REVISÃO
+function openRevisao(){
+  var html='';
+  PILARES.forEach(function(p){
+    html+='<div style="margin-bottom:14px">';
+    html+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:'+p.cor+'"></div><div style="font-size:12px;font-weight:600">'+p.nome+'</div></div>';
+    html+='<div style="display:flex;gap:5px">';
+    [{v:1,l:'parado'},{v:2,l:'pouco'},{v:3,l:'médio'},{v:4,l:'bom'},{v:5,l:'ótimo'}].forEach(function(o){
+      html+='<button onclick="selRevisao(\''+p.id+'\','+o.v+',this)" style="flex:1;padding:8px 2px;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-family:DM Mono,monospace;cursor:pointer;transition:all .15s" id="rev_'+p.id+'_'+o.v+'">'+o.v+'<br><span style="font-size:7px">'+o.l+'</span></button>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('revisaoForm').innerHTML=html;
+  document.getElementById('modalRevisao').classList.add('open');
+}
+var _revSel={};
+function selRevisao(pid,val,btn){
+  _revSel[pid]=val;
+  for(var i=1;i<=5;i++){var el=document.getElementById('rev_'+pid+'_'+i);if(el){el.style.background='transparent';el.style.color='var(--muted)';el.style.borderColor='var(--border)';}}
+  btn.style.background='var(--acc-dim)';btn.style.color='var(--acc)';btn.style.borderColor='rgba(167,139,250,.3)';
+}
+function saveRevisao(){
+  S.revisoes.push({date:new Date().toISOString(),pilares:Object.assign({},_revSel)});
+  save();_revSel={};closeAll();renderEvol();
+}
+
+// EXPORT
+function exportGuia(){
+  var now=new Date();
+  var lines=[];
+  lines.push('RELATÓRIO GUIA — Alice');
+  lines.push('Data: '+now.getDate()+'/'+MN[now.getMonth()]+'/'+now.getFullYear());
+  lines.push('');
+  lines.push('PROGRESSO POR PILAR:');
+  PILARES.forEach(function(p){
+    var prog=S.pilaresProgresso[p.id]||0;
+    var dias=diasSemFazer(p.id);
+    var idx=S.pilaresEstudoIdx[p.id]||0;
+    lines.push('— '+p.nome+': '+Math.round(prog)+'% · '+(dias<999?dias+' dias sem avançar':'não iniciado')+' · Estudou até: '+(p.estudos[idx]?p.estudos[idx].titulo:'início'));
+  });
+  lines.push('');
+  lines.push('ÚLTIMOS REGISTROS ('+Math.min(5,S.registros.length)+'):');
+  S.registros.slice(0,5).forEach(function(r){
+    var d=new Date(r.date);lines.push('— '+d.getDate()+'/'+MN[d.getMonth()]+' · Energia: '+r.energia+'/5');
+    if(r.pilares)Object.keys(r.pilares).forEach(function(k){if(r.pilares[k].length>0){var p=PILARES.find(function(x){return x.id===k;});lines.push('  '+( p?p.nome:k)+': '+r.pilares[k].length+' ações');}});
+  });
+  lines.push('');
+  lines.push('FINANCEIRO (últimos 15 dias):');
+  var d15=new Date();d15.setDate(d15.getDate()-15);
+  var fin15=S.finLancamentos.filter(function(l){return new Date(l.date)>=d15;});
+  var gastos=fin15.filter(function(l){return l.tipo==='gasto';}).reduce(function(a,b){return a+b.val;},0);
+  var receitas=fin15.filter(function(l){return l.tipo==='receita';}).reduce(function(a,b){return a+b.val;},0);
+  lines.push('— Gastos: R$'+gastos.toFixed(2)+' · Receitas: R$'+receitas.toFixed(2)+' · Saldo: R$'+(receitas-gastos).toFixed(2));
+  lines.push('');
+  lines.push('CONQUISTAS RECENTES:');
+  S.conquistas.slice(0,5).forEach(function(c){lines.push('— '+c.emoji+' '+c.texto);});
+  lines.push('');
+  lines.push('GRATIDÕES RECENTES:');
+  S.gratidoes.slice(0,3).forEach(function(g){lines.push('— '+g.texto);});
+  lines.push('');
+  lines.push('TRAVAMENTOS PENDENTES:');
+  S.procItens.filter(function(i){return !i.feito;}).slice(0,5).forEach(function(i){lines.push('— '+i.texto+' ('+i.categ+')');});
+  lines.push('');lines.push('---');lines.push('Cole na conversa com a Rise no Claude para análise.');
+  document.getElementById('exportText').value=lines.join('\n');
+  document.getElementById('copyConfirm').style.display='none';
+  document.getElementById('modalExport').classList.add('open');
+}
+function copyExport(){var t=document.getElementById('exportText');t.select();try{navigator.clipboard.writeText(t.value).then(function(){document.getElementById('copyConfirm').style.display='block';}).catch(function(){document.execCommand('copy');document.getElementById('copyConfirm').style.display='block';});}catch(e){document.execCommand('copy');document.getElementById('copyConfirm').style.display='block';}}
+
+function closeAll(){document.querySelectorAll('.overlay').forEach(function(o){o.classList.remove('open');});}
+
+// INIT
+renderHome();renderConquistas();
+
+</script>
+</body>
+</html>
